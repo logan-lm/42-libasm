@@ -10,6 +10,7 @@ section .text
 ft_strdup:
 	call ft_strlen
 	push rdi
+	inc rax
 	mov rdi, rax
 	call malloc WRT ..plt
 	cmp rax, 0
