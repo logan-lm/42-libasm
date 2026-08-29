@@ -1,0 +1,4 @@
+./*.o
+./libasm.a
+./asm_tester
+.vscode
