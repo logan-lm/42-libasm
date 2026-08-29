@@ -1,4 +1,4 @@
-./*.o
-./libasm.a
-./asm_tester
+/objs
+/libasm.a
+/asm_tester
 .vscode
