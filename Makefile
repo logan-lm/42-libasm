@@ -1,44 +1,50 @@
 LIBNAME = asm
 NAME = lib$(LIBNAME).a
+OBJDIR = objs
 
 NASM = nasm
 NASMFLAGS = -f elf64
 NASMSRCS = ft_strcmp.s ft_strcpy.s ft_strlen.s ft_write.s ft_read.s ft_strdup.s
-NASMOBJS = $(NASMSRCS:.s=.o)
+NASMOBJS = $(addprefix $(OBJDIR)/,$(NASMSRCS:.s=.o))
 
 AR = ar
 ARFLAGS = rcs
 
 TESTERNAME = asm_tester
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g3
 CSRCS = main.c
-COBJS = $(CSRCS:.c=.o)
+COBJS = $(addprefix $(OBJDIR)/,$(CSRCS:.c=.o))
+
+RM = rm
 
 all: $(NAME)
 
 $(NAME): $(NASMOBJS)
-	ar $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $^
 
 tester: $(TESTERNAME)
 
-$(TESTERNAME): $(COBJS)
-	$(CC) $^ $(CFLAGS) -L. -l$(LIBNAME) -o $@
+$(TESTERNAME): $(COBJS) $(NAME)
+	$(CC) $(COBJS) $(CFLAGS) -L. -l$(LIBNAME) -o $@
 
-%.o : %.s
+$(OBJDIR):
+	mkdir -p $@
+
+$(OBJDIR)/%.o : %.s | $(OBJDIR)
 	$(NASM) $(NASMFLAGS) $< -o $@
 
-%.o : %.c $(NAME)
-	$(CC) -c $< $(CFLAGS)
+$(OBJDIR)/%.o : %.c | $(OBJDIR)
+	$(CC) -c $< $(CFLAGS) -o $@
 
 clean:
-	rm -rf $(NASMOBJS) $(COBJS)
+	$(RM) -rf $(OBJDIR)
 
 fclean: clean
-	rm -rf $(NAME) $(TESTERNAME)
+	$(RM) -rf $(NAME) $(TESTERNAME)
 
 re:
-	make fclean
-	make $(NAME)
+	$(MAKE) fclean
+	$(MAKE) all
 
-.PHONY: all tester clean fclean
+.PHONY: all tester clean fclean re
