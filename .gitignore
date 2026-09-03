@@ -1,4 +1,7 @@
 /objs
 /libasm.a
+/libasm_bonus.a
 /asm_tester
+/asm_bonus_tester
 .vscode
+.idea
